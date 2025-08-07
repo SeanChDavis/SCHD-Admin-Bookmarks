@@ -24,6 +24,8 @@ class SCHD_Admin_Bookmarks extends PM_Plugin
      */
     public function site_options(): array
     {
+        global $motor;
+
         // Build the options for selecting admin pages
         $path_index = $this->get_admin_page_paths($this->get_admin_pages());
 
@@ -31,7 +33,7 @@ class SCHD_Admin_Bookmarks extends PM_Plugin
         $fields = array(
             'bookmark_desc' => array(
                 'type' => 'custom',
-                'html' => '<p style="max-width:768px">Select up to pages to '.$this->max_bookmarks.' to bookmark for quick access in the admin area.</p>'
+                'html' => '<p style="max-width:664px">Select up to '.$this->max_bookmarks.' pages to bookmark for quick access in the admin area. Once selected, go to the <a href="'.$motor->admin_url('admin-theme/editor/').'">Admin Template Editor</a> and drag the Admin Bookmarks box to your desired templates. Suggested placement: <code>Body</code> -> <code>Section:Header</code> -> <code>Container:Header</code> -> <em>Placed below the Flex container</em>.</p>'
             )
         );
         for ($i = 1; $i <= $this->max_bookmarks; $i++) {
@@ -147,19 +149,18 @@ class SCHD_Admin_Bookmarks extends PM_Plugin
 
         // Output the CSS for the dropdown
         echo "$tab<style>
-            .admin-bookmarks-dropdown { position: relative; padding-top: 10px; }
-            .admin-bookmarks-toggle { color: unset; cursor: pointer; text-decoration: none; }
-            .admin-bookmarks-toggle:hover { text-decoration: underline; }
-            .admin-bookmarks-list { display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid rgba(0, 0, 0, 0.1); margin: 0; padding: 4px 0; list-style: none; z-index: 9999; border-radius: 7px }
-            .admin-bookmarks-item { padding: 4px 17px; }
-            .admin-bookmarks-link { text-decoration: none; color: #333; }
+            .admin-bookmarks-dropdown { position: relative; padding-top: 10px; font-size: 17px; }
+            .admin-bookmarks-toggle { color: unset; cursor: pointer; display: flex; align-items: center; column-gap: 5px; width: fit-content; }
+            .admin-bookmarks-list { display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid rgba(0, 0, 0, 0.1); margin: 0; padding: 4px 0; list-style: none; z-index: 9999; border-radius: 7px;  }
+            .admin-bookmarks-link { display: block; text-decoration: none; color: #333; padding: 4px 22.5px; }
             .admin-bookmarks-link:hover { text-decoration: underline; }
             .admin-bookmarks-dropdown.open .admin-bookmarks-list { display: block; }
         </style>\n";
 
         // Output the dropdown HTML
         echo "$tab<div class=\"admin-bookmarks-dropdown\">\n";
-        echo "$tab\t<a class=\"admin-bookmarks-toggle\">Bookmarks</a>\n";
+        echo "$tab\t<a class=\"admin-bookmarks-toggle\">".$motor->tools->svg->icon('menu',
+                $depth + 1)."Bookmarks</a>\n";
         echo "$tab\t<ul class=\"admin-bookmarks-list\">\n";
 
         foreach ($this->get_saved_bookmarks() as $bookmark) {
